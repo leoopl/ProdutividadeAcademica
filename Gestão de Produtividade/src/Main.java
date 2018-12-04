@@ -1,10 +1,16 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
+	static List<Colaborador> colaboradores;
+	static List<Projeto> projetos;
 
 	public static void main(String[] args) {
 		Scanner scan = new Scanner(System.in);
-		
+		colaboradores = new ArrayList<>();
+		projetos = new ArrayList<>();
+
 		int input;
 		do {
 			System.out.println("Escolha o número da operação que deseja realizar: ");
@@ -15,7 +21,7 @@ public class Main {
 			System.out.println("[5] - Publicação/Orientação");
 			System.out.println("[6] - Sair");
 			input = scan.nextInt();
-			
+
 			switch (input) {
 			case 1:
 				addColaborador();
@@ -27,7 +33,7 @@ public class Main {
 				consult();
 				break;
 			case 4:
-				printReport();//faço um contador pra cada 1????
+				//printReport();// faço um contador pra cada 1????
 				break;
 			case 5:
 				addPublication();
@@ -38,7 +44,7 @@ public class Main {
 			default:
 				System.out.println("Opção invalida");
 			}
-		}while(input != 6);
+		} while (input != 6);
 
 	}
 
@@ -51,17 +57,17 @@ public class Main {
 		String confName = scan.nextLine();
 		System.out.println("Ano de publicação: ");
 		int date = scanInt.nextInt();
-		//como add mais de 1 autor
+		// como add mais de 1 autor
 		System.out.println("Você deseja associar a algum projeto: [1] - SIM [2] - Não");
 		int aux = scanInt.nextInt();
 		if (aux == 1) {
 			System.out.println("Nome do projeto no qual deseja associar sua publicação: ");
 			String projName = scan.nextLine();
-			//procurar se o projeto existe e se ele esta "em andamento"
-		}else {
+			// procurar se o projeto existe e se ele esta "em andamento"
+		} else {
 			System.out.println("Nenhum projeto associado.");
 		}
-		//criar uma nova prblicação e setar tudo		
+		// criar uma nova prblicação e setar tudo
 	}
 
 	private static void consult() {
@@ -73,28 +79,28 @@ public class Main {
 		if (input == 1) {
 			System.out.println("Digite o nome do Colaborador: ");
 			name = scan.nextLine();
-			//pesquisar se esse colaborador existe
-		}else if (input == 2) {
+			// pesquisar se esse colaborador existe
+		} else if (input == 2) {
 			System.out.println("Digite o nome do Projeto: ");
 			name = scan.nextLine();
-			//pesquisar se existe e fazer um toString
-		}else {
+			// pesquisar se existe e fazer um toString
+		} else {
 			return;
 		}
-		
+
 	}
 
 	private static void projectMenu() {
 		Scanner scan = new Scanner(System.in);
 		Scanner scanInt = new Scanner(System.in);
-		
+
 		System.out.println("[1] - Novo Projeto");
 		System.out.println("[2] - Alocação de participantes");
 		System.out.println("[3] - Alterar Status");
 		System.out.println("[0] - Voltar ao menu principal");
 		String projName;
 		int input = scanInt.nextInt();
-		
+
 		switch (input) {
 		case 1:
 			System.out.println("Titulo do projeto:");
@@ -107,30 +113,57 @@ public class Main {
 			String agtName = scan.nextLine();
 			System.out.println("Valor do financiamento: ");
 			double value = scanInt.nextDouble();
-			System.out.println("Data de inicio do projeto: ");//especificar como vai ser o input
+			System.out.println("Data de inicio do projeto (Digite no formato - dd/mm/aa): ");
 			String inicialDate = scan.nextLine();
-			System.out.println("Data para finalização do projeto: ");
+			System.out.println("Data para finalização do projeto (Digite no formato - dd/mm/aa): ");
 			String finalDate = scan.nextLine();
 			System.out.println("Nome do professor responsaval: ");
 			String profName = scan.nextLine();
-			//procurar se esse professor existe e da o set	
-			//setar o projeto como "em elaboração"
-			
+
+			if (searchColab(profName, 4)) {
+				Projeto newProj = new Projeto(projName, inicialDate, finalDate, obj, desc, value, agtName, profName);
+				newProj.getParticipantes().add(profName);
+				projetos.add(newProj);
+			} else {
+				System.out.println("Colaborador não existe ou não é professor");
+			}
 			break;
 		case 2:
 			System.out.println("Qual Projeto você quer alocar?");
 			projName = scan.nextLine();
-			//procurar se o projeto existe e se ele esta "em elaboração"
-			System.out.println("Nome do colaborador a ser alocado: ");
-			//ser for aluno de graduação, verificar se ele ja esta em um projeto, se não ele pode entrar.			
-			
+
+			Projeto projeto = searchProject(projName, 1);
+			if (projeto != null) {
+				System.out.println("Nome do colaborador a ser alocado: ");
+				String newName = scan.nextLine();
+				if (searchColab(newName, 0)) {
+					if (searchColab(newName, 1)) {
+						if (checkProject(newName)) {
+							projeto.getParticipantes().add(newName);
+						}
+					} else {
+						projeto.getParticipantes().add(newName);
+					}
+				} else {
+					System.out.println("Colaborador não existente");
+				}
+			}
 			break;
 		case 3:
 			System.out.println("Qual Projeto você quer alterar?");
 			projName = scan.nextLine();
-			//procurar se o projeto existe
-			//se o status for 1 (verificar as informações basicas??????)
-			//se o status for 2 verificar o tamanho da lista de publicações se for > 1 pode alterar. se não error
+			Projeto prj = searchProject(projName, 0);
+			if (prj.getType() == 1) {
+				prj.setType(2);//ver isso aqui
+			}else if (prj.getType() == 2) {
+				if (prj.getPublicações().size() > 1) {
+					prj.setType(3);
+				}else {
+					System.out.println("Projeto sem publicações");
+				}
+			} else if (prj.getType() == 3) {
+				System.out.println("projeto concluido");
+			}
 			break;
 
 		default:
@@ -142,47 +175,83 @@ public class Main {
 	private static void addColaborador() {
 		Scanner scan = new Scanner(System.in);
 		Scanner scanString = new Scanner(System.in);
-		
-		System.out.println("Tipo de Colaborador:");
-		System.out.println("[1] - Aluno");
-		System.out.println("[2] - Professor");
-		System.out.println("[3] - Pesquisador");
-		System.out.println("[0] - Voltar ao menu principal");
-		String newName, newEmail;
-		int input = scan.nextInt();
-		
-		switch (input) {
+
+		System.out.println("Nome do Colaborador:");
+		String newName = scanString.nextLine();
+		System.out.println("E-mail do Colaborador: ");
+		String newEmail = scanString.nextLine();
+		System.out.println(
+				"Tipo do Colaborador:\n [1] - Aluno Graduando\n [2] - Aluno Mestrando\n [3] - Aluno Doutorando\n [4] - Professor\n [5] - Pesquisador");
+		int newType = scan.nextInt();
+		Colaborador newColab;
+		switch (newType) {
 		case 1:
-			System.out.println("Nome do Aluno:");
-			newName = scanString.nextLine();
-			System.out.println("E-mail do Aluno: ");
-			newEmail = scanString.nextLine();
-			System.out.println("Tipo do aluno:\n [1] - Graduando\n [2] - Mestrando\n [3] - Doutorando");
-			int newType = scan.nextInt();
-			Estudante newAluno = new Estudante(newName, newEmail, newType);
-			//add aluno na lista ou seria melhor hashmap de alunos
+			newColab = new Colaborador(newName, newEmail, 1);
+			colaboradores.add(newColab);
 			break;
 		case 2:
-			System.out.println("Nome do Professor: ");
-			newName = scanString.nextLine();
-			System.out.println("E-mail do Professor: ");
-			newEmail = scanString.nextLine();
-			Professor newProf = new Professor(newName, newEmail);
-			// add o professor na lista
+			newColab = new Colaborador(newName, newEmail, 2);
+			colaboradores.add(newColab);
 			break;
 		case 3:
-			System.out.println("Nome do Pesquisador: ");
-			newName = scanString.nextLine();
-			System.out.println("E-mail do Pesquisador: ");
-			newEmail = scanString.nextLine();
-			Pesquisador newPesq = new Pesquisador(newName, newEmail);
-			//add na lista
+			newColab = new Colaborador(newName, newEmail, 3);
+			colaboradores.add(newColab);
 			break;
-		case 0:
-			return;
+		case 4:
+			newColab = new Colaborador(newName, newEmail, 4);
+			colaboradores.add(newColab);
+			break;
+		case 5:
+			newColab = new Colaborador(newName, newEmail, 5);
+			colaboradores.add(newColab);
+			break;
 		default:
 			break;
-		}		
+		}
+	}
+
+	private static Projeto searchProject(String name, int type) {
+
+		for (Projeto projeto : projetos) {
+			if (projeto.getTitulo().equals(name)) {
+				if (type == 0) {
+					return projeto;
+				}
+
+				if (type == projeto.getType()) {
+					return projeto;
+				}
+
+			}
+		}
+		return null;
+	}
+
+	private static boolean searchColab(String name, int type) {
+		for (Colaborador colaborador : colaboradores) {
+			if (colaborador.getNome().equals(name)) {
+				if (type == 0) {
+					return true;
+				}
+
+				if (type == colaborador.getType()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private static boolean checkProject(String name) {
+		for (Projeto projeto : projetos) {
+			for (String participante : projeto.getParticipantes()) {
+				if (participante.equals(name)) {
+					return true;
+				}
+			}
+		}
+		return false;
+
 	}
 
 }

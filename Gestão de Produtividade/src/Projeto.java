@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public class Projeto {
 	private String titulo;
@@ -8,8 +9,43 @@ public class Projeto {
 	private String descriçao;
 	private Double valor;
 	private String financiadora;
-	private ArrayList<String> participantes;
+	private String profResponsavel;
+	private List<String> participantes;
+	private List<String> publicações;
+	private int type; //1 - "em elaboração" 2 - "em andamento" 3 - "concluido"	
+	
+	public Projeto(String titulo, String dataInicial, String dataFinal, String objetivo, String descriçao, Double valor,
+			String financiadora, String profResponsavel) {
 
+		this.titulo = titulo;
+		this.dataInicial = dataInicial;
+		this.dataFinal = dataFinal;
+		this.objetivo = objetivo;
+		this.descriçao = descriçao;
+		this.valor = valor;
+		this.financiadora = financiadora;
+		this.profResponsavel = profResponsavel;
+		this.participantes = new ArrayList<>();
+		this.setPublicações(new ArrayList<>());
+		this.type = 1;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
+	public String getProfResponsavel() {
+		return profResponsavel;
+	}
+
+	public void setProfResponsavel(String profResponsavel) {
+		this.profResponsavel = profResponsavel;
+	}
+	
 	public String getTitulo() {
 		return titulo;
 	}
@@ -66,12 +102,20 @@ public class Projeto {
 		this.financiadora = financiadora;
 	}
 
-	public ArrayList<String> getParticipantes() {
+	public List<String> getParticipantes() {
 		return participantes;
 	}
 
-	public void setParticipantes(ArrayList<String> participantes) {
+	public void setParticipantes(List<String> participantes) {
 		this.participantes = participantes;
+	}
+
+	public List<String> getPublicações() {
+		return publicações;
+	}
+
+	public void setPublicações(List<String> publicações) {
+		this.publicações = publicações;
 	}
 
 }
