@@ -1,13 +1,22 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public class Publicação {
 	private String titulo;
 	private String confName;
 	private int ano;
-	private ArrayList<String> autores;
-	private ArrayList<String> projetos;
+	private List<String> autores;
+	private List<String> projetos;
 	
 	
+	public Publicação(String titulo, String confName, int ano) {
+		super();
+		this.titulo = titulo;
+		this.confName = confName;
+		this.ano = ano;
+		this.autores = new ArrayList<>();
+		this.projetos = new ArrayList<>();
+	}
 	
 	public String getTitulo() {
 		return titulo;
@@ -27,13 +36,13 @@ public class Publicação {
 	public void setAno(int ano) {
 		this.ano = ano;
 	}
-	public ArrayList<String> getAutores() {
+	public List<String> getAutores() {
 		return autores;
 	}
 	public void setAutores(ArrayList<String> autores) {
 		this.autores = autores;
 	}
-	public ArrayList<String> getProjetos() {
+	public List<String> getProjetos() {
 		return projetos;
 	}
 	public void setProjetos(ArrayList<String> projetos) {

@@ -30,6 +30,25 @@ public class Projeto {
 		this.type = 1;
 	}
 
+	@Override
+	public String toString() {
+		return "Projeto [Titulo = " + titulo + ", DataInicial = " + dataInicial + ", DataFinal = " + dataFinal + ", Objetivo = "
+				+ objetivo + ", Descriçao = " + descriçao + ", Valor do financiamento =" + valor + ", Financiadora = " + financiadora
+				+ ", Professor Responsavel = " + profResponsavel + ", Participantes = " + participantes + ", Publicações = "
+				+ publicações + ", Status = " + getType(type) + "]";
+	}
+	
+	public String getType(int type) {
+		if (type == 1) {
+			return "Em elaboração";
+		}else if (type == 2) {
+			return "Em andamento";
+		}else {
+			return "Concluido";
+		}
+	}
+
+
 	public int getType() {
 		return type;
 	}
